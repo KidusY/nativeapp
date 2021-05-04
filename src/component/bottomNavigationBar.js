@@ -33,6 +33,16 @@ const bottomNavigationBar = ({ navigation}) => {
     
         <MaterialCommunityIcons name="text-to-speech" size={24} color="white" style={{ alignSelf: "center" }} />
       </TouchableOpacity>
+      <TouchableOpacity style={style.navElements} onPress={() => navigation('Page3')}>
+        <LinearGradient
+          // Background Linear Gradient
+          colors={["rgba(93,134,174,0.99)", "transparent"]}
+          style={style.background}
+        />
+    
+        <AntDesign name="sound" size={24} color="white" style={{ alignSelf: "center" }} />
+       
+      </TouchableOpacity>
     
     </View>
   );

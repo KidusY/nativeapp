@@ -3,162 +3,165 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 const { width, height } = Dimensions.get('screen');
-const map = ({ sourceLocation, destinationLocation, time, distance, showInput, initalLocation }) => {
+const map = ({ sourceLocation, destinationLocation, time, distance, showInput, initialLocation }) => {
     const mapRef = useRef(null);
     const [showDrivingRoute, setShowDrivingRoute] = useState(true)
     const [showBicycleRoute, setShowBicycleRoute] = useState(true)
     const [showTransitRoute, setShowTransitRoute] = useState(true)
     return (
         <View>
-            { (!showInput && sourceLocation.length > 0 && destinationLocation.length > 0) &&
+            {
+                (sourceLocation && destinationLocation) &&
                 <View>
-                    <Text style={{ color: "white", fontSize: 20 }}>To: {destinationLocation[0].formatted_address}</Text>
-                    <Text style={{ color: "white", fontSize: 16 }}>from: {sourceLocation[0].formatted_address}</Text>
+                    {(!showInput && sourceLocation.length > 0 && destinationLocation.length > 0) &&
+                        <View>
+                            <Text style={{ color: "white", fontSize: 20 }}>To: {destinationLocation[0].formatted_address}</Text>
+                            <Text style={{ color: "white", fontSize: 16 }}>from: {sourceLocation[0].formatted_address}</Text>
 
-                    <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
-                        <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showDrivingRoute ? "blue" : "white" }}
-                            onPress={() => { setShowDrivingRoute(!showDrivingRoute) }}
-                        >
-                            <Text style={styles.btnLable}>
-                                Driving
+                            <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
+                            <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showDrivingRoute ? "#283593" : "white", borderRadius: 10 }}
+                                    onPress={() => { setShowDrivingRoute(!showDrivingRoute) }}
+                                >
+                                <Text style={{...styles.btnLable, color: showDrivingRoute ? "white" : "black"}}>
+                                        Driving
                 </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showBicycleRoute ? "red" : "white" }}
-                            onPress={() => setShowBicycleRoute(!showBicycleRoute)}
-                        >
-                            <Text style={styles.btnLable}>
-                                Bicycle
+                                </TouchableOpacity>
+                            <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showBicycleRoute ? "#d32f2f" : "white", color: showDrivingRoute ? "white" : "black", borderRadius: 10 }}
+                                    onPress={() => setShowBicycleRoute(!showBicycleRoute)}
+                                >
+                                <Text style={{ ...styles.btnLable, color: showDrivingRoute ? "white" : "black" }}>
+                                        Bicycle
                </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showTransitRoute ? "green" : "white" }} onPress={() => setShowTransitRoute(!showTransitRoute)}>
-                            <Text style={styles.btnLable}>
+                                </TouchableOpacity>
+                            <TouchableOpacity style={{ width: (width / 3) - 10, height: 30, backgroundColor: showTransitRoute ? "#2e7d32" : "white", color: showDrivingRoute ? "white" : "black", borderRadius: 10 }} onPress={() => setShowTransitRoute(!showTransitRoute)}>
+                                <Text style={{ ...styles.btnLable, color: showDrivingRoute ? "white" : "black" }}>
 
-                                Transit
+                                        Transit
                 </Text>
-                        </TouchableOpacity>
-                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    }
                 </View>
             }
+
             {
-                (sourceLocation.length > 0 && destinationLocation.length > 0) ?
-
-                    <MapView
-
-                        ref={mapRef}
-                        showsUserLocation
-                        showsTraffic
-                        showsScale
-                        style={styles.map}
-                        focusable
-                        initialRegion={
-                            {
-                                latitude: initalLocation.coords.latitude,
-                                longitude:initalLocation.coords.longitude,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421
-                            }
-
-                        }
-                        region={
-                            {
-                                latitude: sourceLocation[0].geometry.location.lat || initalLocation.coords.latitude,
-                                longitude: sourceLocation[0].geometry.location.lng || initalLocation.coords.longitude,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421
-                            }
-                        }
-
-                    >
-                        <Marker
-
-                            coordinate={{ latitude: sourceLocation[0].geometry.location.lat, longitude: sourceLocation[0].geometry.location.lng, }}
-
-                        />
-                        <Marker
-
-                            coordinate={{ latitude: destinationLocation[0].geometry.location.lat, longitude: destinationLocation[0].geometry.location.lng, }}
-
-                        />
-                        {showDrivingRoute &&
-                            <MapViewDirections
-                                mode={"BICYCLING"}
-                                origin={{ latitude: sourceLocation[0].geometry.location.lat, longitude: sourceLocation[0].geometry.location.lng, }}
-                                destination={{ latitude: destinationLocation[0].geometry.location.lat, longitude: destinationLocation[0].geometry.location.lng, }}
-                                apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
-                                strokeWidth={10}
-                                strokeColor={"hotpink"}
-                                onReady={result => {
 
 
-                                    mapRef.current.fitToCoordinates(result.coordinates, {
-                                        edgePadding: {
-                                            right: width / 20,
-                                            bottom: height / 20,
-                                            left: width / 20,
-                                            top: height / 20
-                                        }
-                                    });
+                <MapView
 
-                                }}
-                            />}
-                        {showBicycleRoute &&
-                            <MapViewDirections
-
-                                mode={"DRIVING"}
-                                origin={{ latitude: sourceLocation[0].geometry.location.lat, longitude: sourceLocation[0].geometry.location.lng, }}
-                                destination={{ latitude: destinationLocation[0].geometry.location.lat, longitude: destinationLocation[0].geometry.location.lng, }}
-                                apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
-                                strokeWidth={10}
-                                strokeColor={"blue"}
-                                onReady={result => {
-
-
-                                    mapRef.current.fitToCoordinates(result.coordinates, {
-                                        edgePadding: {
-                                            right: width / 20,
-                                            bottom: height / 20,
-                                            left: width / 20,
-                                            top: height / 20
-                                        }
-                                    });
-
-                                }}
-                            />}
+                    ref={mapRef}
+                    showsUserLocation
+                    showsTraffic
+                    showsScale
+                    style={styles.map}
+                    focusable
+                    initialRegion={
                         {
-                            showTransitRoute &&
-                            <MapViewDirections
-                                mode={"TRANSIT"}
-                                origin={{ latitude: sourceLocation[0].geometry.location.lat, longitude: sourceLocation[0].geometry.location.lng, }}
-                                destination={{ latitude: destinationLocation[0].geometry.location.lat, longitude: destinationLocation[0].geometry.location.lng, }}
-                                apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
-                                strokeWidth={10}
-                                strokeColor={"green"}
-                                onReady={result => {
+                            latitude: initialLocation.coords.latitude,
+                            longitude: initialLocation.coords.longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421
+                        }
 
+                    }
+                    region={
+                        {
+                            latitude: sourceLocation[0]?.geometry.location.lat || initialLocation.coords.latitude,
+                            longitude: sourceLocation[0]?.geometry.location.lng || initialLocation.coords.longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421
+                        }
+                    }
 
-                                    mapRef.current.fitToCoordinates(result.coordinates, {
-                                        edgePadding: {
-                                            right: width / 20,
-                                            bottom: height / 20,
-                                            left: width / 20,
-                                            top: height / 20
-                                        }
-                                    });
+                >
+                   { ( sourceLocation.length > 0 && destinationLocation.length > 0 ) &&
+                   <View>
+                    <Marker
 
-                                }}
-                            />}
-                        {/* <MapView.Polyline
-                                strokeWidth={2}
-                                strokeColor="blue"
-                                coordinates={coords}
-                            /> */}
+                        coordinate={{ latitude: sourceLocation[0].geometry.location.lat, longitude: sourceLocation[0].geometry.location.lng, }}
 
-                    </MapView>
+                    />
+                    <Marker
 
-                    :
-                    <View>
-                        <Text style={styles.label}>Make sure you put in a correct address</Text>
+                        coordinate={{ latitude: destinationLocation[0].geometry.location.lat, longitude: destinationLocation[0].geometry.location.lng, }}
+
+                    />
                     </View>
+                    }
+
+                    {(showDrivingRoute && (sourceLocation.length > 0 && destinationLocation.length > 0 ) ) &&
+                        <MapViewDirections
+                            mode={"BICYCLING"}
+                            origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
+                            destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
+                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                            strokeWidth={10}
+                            strokeColor={"hotpink"}
+                            onReady={result => {
+
+
+                                mapRef.current.fitToCoordinates(result.coordinates, {
+                                    edgePadding: {
+                                        right: width / 20,
+                                        bottom: height / 20,
+                                        left: width / 20,
+                                        top: height / 20
+                                    }
+                                });
+
+                            }}
+                        />}
+                    {(showBicycleRoute && (sourceLocation.length > 0 && destinationLocation.length > 0 ) ) &&
+                        <MapViewDirections
+
+                            mode={"DRIVING"}
+                            origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
+                            destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
+                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                            strokeWidth={10}
+                            strokeColor={"blue"}
+                            onReady={result => {
+
+
+                                mapRef.current.fitToCoordinates(result.coordinates, {
+                                    edgePadding: {
+                                        right: width / 20,
+                                        bottom: height / 20,
+                                        left: width / 20,
+                                        top: height / 20
+                                    }
+                                });
+
+                            }}
+                        />}
+                    {
+                       ( showTransitRoute && (sourceLocation.length > 0 && destinationLocation.length > 0 ) ) &&
+                        <MapViewDirections
+                            mode={"TRANSIT"}
+                            origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
+                            destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
+                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                            strokeWidth={10}
+                            strokeColor={"green"}
+                            onReady={result => {
+
+
+                                mapRef.current.fitToCoordinates(result.coordinates, {
+                                    edgePadding: {
+                                        right: width / 20,
+                                        bottom: height / 20,
+                                        left: width / 20,
+                                        top: height / 20
+                                    }
+                                });
+
+                            }}
+                        />}                  
+
+                </MapView>
+
+
 
             }
         </View>
@@ -174,7 +177,9 @@ const styles = StyleSheet.create({
 
     },
     btnLable: {
-        textAlign: 'center'
+        textAlign: 'center',
+        alignSelf:'center',
+        justifyContent:'center'
     },
     textInput: {
         borderColor: "white",

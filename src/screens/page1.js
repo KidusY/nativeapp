@@ -16,8 +16,8 @@ const page1 = (props) => {
     const [DestinationInput, setDestinationInput] = useState('')
     const [showInput, setShowInput] = useState(true);
 
-    const [sourceLocation, setSourceLocation] = useState(null)
-    const [destinationLocation, setDestinationLocation] = useState(null);
+    const [sourceLocation, setSourceLocation] = useState([])
+    const [destinationLocation, setDestinationLocation] = useState([]);
 
     const [coords, setCoords] = useState(null);
     const [time, setTime] = useState(null);
@@ -79,7 +79,7 @@ const page1 = (props) => {
             console.log('Error: ', error)
         }
     }
-console.log(location);
+
     return (
         <View style={{ flex: 1, backgroundColor: "#111111" }}>
             <ScrollView>
@@ -103,7 +103,7 @@ console.log(location);
 
 
                     {
-                        (!!sourceLocation && !!destinationLocation) &&
+                        location &&
                         <Map initialLocation={location} sourceLocation={sourceLocation} destinationLocation={destinationLocation} time={time} distance={distance} showInput={showInput} />
 
 

@@ -14,7 +14,7 @@ const navigator = createStackNavigator(
    
   },
   {
-    initialRouteName: "Page1",
+    initialRouteName: "Page3",
     headerMode: "none",
   }
 );
