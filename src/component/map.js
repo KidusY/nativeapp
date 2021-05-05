@@ -123,7 +123,7 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
                             mode={"DRIVING"}
                             origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
                             destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
-                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                            apikey={""}
                             strokeWidth={10}
                             strokeColor={"blue"}
                             onReady={result => {
