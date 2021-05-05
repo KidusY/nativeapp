@@ -1,89 +1,147 @@
-import React,{useState,useEffect} from 'react'
-import { View, Text, Button,StyleSheet,Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { View, Text, Button, StyleSheet, Dimensions, TouchableOpacity, Image,ScrollView } from 'react-native';
+import BottomNav from '../component/bottomNavigationBar'
 import { Audio } from 'expo-av';
-import { Asset, useAssets } from 'expo-asset';
-const { width } = Dimensions.get('screen');
-const page3 = () => {
+//import { Asset, useAssets } from 'expo-asset';
+//import Sound from 'react-native-sound'
+const { width, height } = Dimensions.get('screen');
+const page3 = (props) => {
 
-    const [sound, setSound] = useState(new Audio.Sound());
-    
-   
-    
+    // const [sound, setSound] = useState(new );
+    const [playLeft, setPlayLeft] = useState(false);
+
+
     async function playSound() {
-        console.log('Loading Sound');
-        try{
-            await sound.loadAsync(require('../assets/audioFile/A#major.wav'));
-            await sound.playAsync();
+        setPlayLeft(true)
+        const soundObject = new Audio.Sound()
 
-            
-            
+        try {
+            const source = require('../../assets/audioFile/A#major.wav')
+            console.log(source);
 
-           
+            await soundObject.loadAsync(source)
+            await soundObject
+                .playAsync()
+                .then(async playbackStatus => {
+                    setTimeout(() => {
+                        soundObject.unloadAsync()
+                    }, playbackStatus.playableDurationMillis)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        } catch (error) {
+            console.log(error)
         }
-        catch(err){
-            console.log(err)
-        }
-       
+
     }
 
-    React.useEffect(() => {
-        return sound
-            ? () => {
-                console.log('Unloading Sound');
-                sound.unloadAsync();
-            }
-            : undefined;
-    }, [sound]);
 
 
     return (
-        <View style={styles.container}>
-            <Text>Page3</Text>
-            <Button title="Play Sound" onPress={playSound} />
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+         <ScrollView>
+            <View style={{ marginTop: 70 }}>
+
+
+                <View>
+                    <View style={styles.head}>
+                        <Image source={require('../../assets/8Txo9zaTp.jpg')} style={{
+
+                            width: 100,
+                            height: 100,
+
+                            justifyContent: "center",
+
+
+
+
+
+                        }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: "center" }}>
+                        <View style={styles.body}>
+
+                        </View>
+                        <View style={{ ...styles.hand, transform: playLeft ? [{ skewX: '30deg' }, { skewY: '30deg' }] : [{ skewX: '0deg' }, { skewY: '0deg' }] }}>
+
+                        </View>
+                        <View style={styles.instrument}>
+
+                        </View>
+                    </View>
+
+                </View>
+
+                <TouchableOpacity style={styles.playBtn} onPressIn={() => playSound()} onPressOut={() => setPlayLeft(false)}>
+                    <Text style={{ textAlign: 'center' }}>Play</Text>
+
+                </TouchableOpacity>
+
+            </View>
+             </ScrollView>
+            <BottomNav navigation={props.navigation.navigate} />
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    label: {
-        color: "white",
-        marginLeft: 50,
-        fontSize: 20
-
-    },
-    button: {
+    head: {
         width: 100,
-        height: 40,
-        backgroundColor: "#4D1F81",
+        height: 100,
+        borderRadius: 100,
+        backgroundColor: "black",
+        marginLeft: 60
+
+    },
+    body: {
+        width: 100,
+        height: 300,
+        backgroundColor: "black",
+        justifyContent: 'center',
         alignSelf: 'center',
-        justifyContent: "center",
-        borderRadius: 10
+        borderRadius: 60,
+        marginTop: 10
+    },
 
+    hand: {
+        width: 100,
+        height: 50,
+        backgroundColor: "black",
+        marginTop: 100,
+        borderRadius: 20,
 
     },
-    textInput: {
-        borderColor: "#4D1F81",
-        borderWidth: 2,
-        width: width - 100,
-        height: 60,
-        justifyContent: "center",
+    instrument: {
+        width: 100,
+        height: 100,
+        marginTop: 170,
+        backgroundColor: "black",
+    },
+    playBtn: {
+        width: 200,
+        height: 200,
+        justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: "center",
-        borderRadius: 10,
-        color: "white",
-        fontSize: 20,
-        marginBottom: 10
-    },
+        alignContent: "center",
+        borderRadius: 100,
+        backgroundColor: "grey"
+    }
+    ,
+
+
     container: {
         width: width - 10,
-        margin: 70,
+        minHeight: height,
+
         alignSelf: "center",
-    },
-    map: {
+        backgroundColor: "white",
         flex: 1,
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        justifyContent: 'center',
+        alignContent: "center"
+
     },
+
 
 })
 

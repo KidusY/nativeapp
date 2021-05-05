@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import { View, Text, ScrollView, StyleSheet, TextInput,Button,Dimensions } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput,Button,Dimensions,TouchableOpacity, Touchable } from 'react-native';
 import BottomNav from '../component/bottomNavigationBar';
 import * as Speech from 'expo-speech';
 const { width } = Dimensions.get('screen');
@@ -18,8 +18,12 @@ const [textInput,setTextInput] = useState('');
         <ScrollView>
             
                 <View style={{margin:100}}>
+                <Text style={styles.label}> Write Something </Text>
                     <TextInput style={styles.textInput} value={textInput} onChangeText={(input) => setTextInput(input) }/>
-                    <Button title="Press to hear some words" onPress={speak} />
+                    <TouchableOpacity onPress={speak}  style={styles.talkBtn}>
+                        <Text style={{color:"white", textAlign:"center"}}> Talk </Text>
+                    </TouchableOpacity>
+                   
                 </View>
 
                 <Text style={styles.textHeader}>{textInput}</Text>
@@ -38,6 +42,15 @@ const styles = StyleSheet.create({
         fontSize: 20
 
     },
+    talkBtn:{
+        width: 100,
+        height: 40,
+        backgroundColor: "#4D1F81",
+        alignSelf: 'center',
+        justifyContent: "center",
+        borderRadius: 10
+    },
+
     textHeader:{
         color:"white",
         fontSize:25,
@@ -63,11 +76,7 @@ const styles = StyleSheet.create({
         margin: 100,
         alignSelf: "center",
     },
-    map: {
-        flex: 1,
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-    },
+  
 
 })
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, ScrollView, StyleSheet, TextInput, Dimensions, Button, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TextInput, Dimensions, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
 import BottomNav from '../component/bottomNavigationBar';
 
 import Polyline from '@mapbox/polyline'
@@ -9,7 +9,7 @@ import axios from 'axios';
 import Map from '../component/map';
 
 import * as Location from 'expo-location';
-//AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw
+const apiKey = ''
 const { width } = Dimensions.get('screen');
 const page1 = (props) => {
     const [sourceInput, setSourceInput] = useState('')
@@ -26,18 +26,23 @@ const page1 = (props) => {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
 
+    const [inputError, setInputError] = useState(null);
+
+    const [spinner, setSpinner] = useState(false);
     const mapRef = useRef(null);
     useEffect(() => {
-
+        setSpinner(true);
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
+                setSpinner(false);
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
+            setSpinner(false);
         })();
     }, []);
 
@@ -46,10 +51,20 @@ const page1 = (props) => {
 
 
     searchForLocation = async (source, destination) => {
-        let searchedSource = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw&input=${source}`)
+        setInputError(null);
+        let searchedSource = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=${apiKey}&input=${source}`)
 
 
-        let searchedDestination = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw&input=${destination}`);
+        let searchedDestination = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?key=${apiKey}&input=${destination}`);
+
+      
+
+        if (searchedDestination.data.results.length > 0 && searchedSource.data.results.length > 0) {
+            setShowInput(false);
+        }
+        else {
+            setInputError("Please Enter A Valid Address");
+        }
 
         setSourceLocation(searchedSource.data.results);
         setDestinationLocation(searchedDestination.data.results);
@@ -58,7 +73,7 @@ const page1 = (props) => {
 
     getDirections = async (startLoc, desLoc) => {
         try {
-            const resp = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}&key=AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw`)
+            const resp = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}&key=${apiKey}`)
 
 
             const response = resp.data.routes[0]
@@ -85,31 +100,34 @@ const page1 = (props) => {
             <ScrollView>
                 <View style={styles.container}>
 
-                    {showInput ?
+                    {showInput &&
                         <View>
+                            {inputError && <Text style={{ ...styles.label, color:"#c62828"}}>{inputError}</Text>}
                             <Text style={styles.label}>Source</Text>
                             <TextInput style={styles.textInput} value={sourceInput} onChangeText={(input) => setSourceInput(input)} />
                             <Text style={styles.label}>Destination</Text>
                             <TextInput style={styles.textInput} value={DestinationInput} onChangeText={(input) => setDestinationInput(input)} />
                             <TouchableOpacity style={styles.button} onPress={() => {
                                 searchForLocation(sourceInput, DestinationInput);
-                                setShowInput(false);
-                            }} >
-                                <Text style={{textAlign:"center",padding:5,color:"white",fontWeight:"800"}}> Go </Text>
-                            </TouchableOpacity>
-                        </View> :
-                        <TouchableOpacity title="Back" onPress={() => setShowInput(true)} />
-                    }
 
+                            }} >
+                                <Text style={{ textAlign: "center", padding: 5, color: "white", fontWeight: "800" }}> Go </Text>
+                            </TouchableOpacity>
+                        </View> 
+                        
+                    }
 
                     {
+                        spinner && <ActivityIndicator />
+                    }
+                    {
                         location &&
-                        <Map initialLocation={location} sourceLocation={sourceLocation} destinationLocation={destinationLocation} time={time} distance={distance} showInput={showInput} />
+                        <Map initialLocation={location} setShowInput={setShowInput} sourceLocation={sourceLocation} destinationLocation={destinationLocation} time={time} distance={distance} showInput={showInput} />
 
 
                     }
 
-
+                    <Text style={styles.label}>{errorMsg} </Text>
 
                 </View>
             </ScrollView>
@@ -130,11 +148,11 @@ const styles = StyleSheet.create({
         width: 100,
         height: 40,
         backgroundColor: "#4D1F81",
-        alignSelf:'center',
-        justifyContent:"center",
-        borderRadius:10
-        
-        
+        alignSelf: 'center',
+        justifyContent: "center",
+        borderRadius: 10
+
+
     },
     textInput: {
         borderColor: "#4D1F81",

@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 const { width, height } = Dimensions.get('screen');
-const map = ({ sourceLocation, destinationLocation, time, distance, showInput, initialLocation }) => {
+const map = ({ sourceLocation, destinationLocation, time, distance, showInput, initialLocation, setShowInput }) => {
     const mapRef = useRef(null);
     const [showDrivingRoute, setShowDrivingRoute] = useState(true)
     const [showBicycleRoute, setShowBicycleRoute] = useState(true)
@@ -15,6 +16,10 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
                 <View>
                     {(!showInput && sourceLocation.length > 0 && destinationLocation.length > 0) &&
                         <View>
+                        <TouchableOpacity title="Back" onPress={() => setShowInput(true)}> 
+                            <Text style={{ color:"#c62828"}}> <AntDesign name="back" size={24} color="#c62828" /> Back</Text>
+
+                         </TouchableOpacity>
                             <Text style={{ color: "white", fontSize: 20 }}>To: {destinationLocation[0].formatted_address}</Text>
                             <Text style={{ color: "white", fontSize: 16 }}>from: {sourceLocation[0].formatted_address}</Text>
 
