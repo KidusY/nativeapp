@@ -9,6 +9,8 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
     const [showDrivingRoute, setShowDrivingRoute] = useState(true)
     const [showBicycleRoute, setShowBicycleRoute] = useState(true)
     const [showTransitRoute, setShowTransitRoute] = useState(true)
+
+    const apiKey = '' // api key
     return (
         <View>
             {
@@ -100,7 +102,7 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
                             mode={"BICYCLING"}
                             origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
                             destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
-                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                        apikey={apiKey}
                             strokeWidth={10}
                             strokeColor={"hotpink"}
                             onReady={result => {
@@ -123,7 +125,7 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
                             mode={"DRIVING"}
                             origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
                             destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
-                            apikey={""}
+                        apikey={apiKey}
                             strokeWidth={10}
                             strokeColor={"blue"}
                             onReady={result => {
@@ -146,7 +148,7 @@ const map = ({ sourceLocation, destinationLocation, time, distance, showInput, i
                             mode={"TRANSIT"}
                             origin={{ latitude: sourceLocation[0]?.geometry.location.lat, longitude: sourceLocation[0]?.geometry.location.lng, }}
                             destination={{ latitude: destinationLocation[0]?.geometry.location.lat, longitude: destinationLocation[0]?.geometry.location.lng, }}
-                            apikey={"AIzaSyCcvdislrno2kTBUQoYr2nEaSJic7V0HAw"}
+                            apikey={apiKey}
                             strokeWidth={10}
                             strokeColor={"green"}
                             onReady={result => {
